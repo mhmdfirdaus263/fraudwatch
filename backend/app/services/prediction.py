@@ -5,10 +5,27 @@ from backend.app.schemas.prediction import (
     PredictionLabel,
     PredictionResponse,
     RiskLevel,
+    TransactionCategory,
     TransactionRequest,
 )
 
 MEDIUM_RISK_THRESHOLD = 0.25
+FRAUD_AMOUNT_MEDIAN = 396.50
+
+HIGH_RISK_HOURS = {
+    0,
+    1,
+    2,
+    3,
+    22,
+    23,
+}
+
+HIGH_RISK_CATEGORIES = {
+    TransactionCategory.SHOPPING_NET,
+    TransactionCategory.MISC_NET,
+    TransactionCategory.GROCERY_POS,
+}
 
 
 def build_raw_transaction(
@@ -49,6 +66,34 @@ def determine_risk_level(
     return RiskLevel.LOW
 
 
+def build_risk_factors(
+    request: TransactionRequest,
+) -> list[str]:
+    risk_factors: list[str] = []
+
+    if request.transaction_datetime.hour in HIGH_RISK_HOURS:
+        risk_factors.append(
+            "Transaction occurred during a high-risk time window."
+        )
+
+    if request.category in HIGH_RISK_CATEGORIES:
+        risk_factors.append(
+            "Category has an elevated fraud rate in training data."
+        )
+
+    if request.amount >= FRAUD_AMOUNT_MEDIAN:
+        risk_factors.append(
+            "Amount is at or above the median fraudulent amount."
+        )
+
+    if not risk_factors:
+        risk_factors.append(
+            "No dominant contextual risk indicator was identified."
+        )
+
+    return risk_factors
+
+
 def predict_transaction(
     request: TransactionRequest,
 ) -> PredictionResponse:
@@ -72,4 +117,5 @@ def predict_transaction(
         needs_review=(
             fraud_score >= predictor.REVIEW_THRESHOLD
         ),
+        risk_factors=build_risk_factors(request),
     )

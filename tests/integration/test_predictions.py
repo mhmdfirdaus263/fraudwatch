@@ -38,6 +38,20 @@ def test_create_prediction_returns_risk_result(
             decision_threshold=0.9687659320172795,
             risk_level=RiskLevel.CRITICAL,
             needs_review=True,
+            risk_factors=[
+                (
+                    "Transaction occurred during a "
+                    "high-risk time window."
+                ),
+                (
+                    "Category has an elevated fraud "
+                    "rate in training data."
+                ),
+                (
+                    "Amount is at or above the median "
+                    "fraudulent amount."
+                ),
+            ],
         )
 
     monkeypatch.setattr(
@@ -58,6 +72,20 @@ def test_create_prediction_returns_risk_result(
         "decision_threshold": 0.9687659320172795,
         "risk_level": "critical",
         "needs_review": True,
+        "risk_factors": [
+            (
+                "Transaction occurred during a "
+                "high-risk time window."
+            ),
+            (
+                "Category has an elevated fraud "
+                "rate in training data."
+            ),
+            (
+                "Amount is at or above the median "
+                "fraudulent amount."
+            ),
+        ],
     }
 
 

@@ -111,3 +111,9 @@ def test_predict_transaction_applies_risk_rules(
         response.decision_threshold
         == predictor.DECISION_THRESHOLD
     )
+
+    assert response.risk_factors == [
+        "Transaction occurred during a high-risk time window.",
+        "Category has an elevated fraud rate in training data.",
+        "Amount is at or above the median fraudulent amount.",
+    ]

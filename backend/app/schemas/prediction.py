@@ -85,3 +85,4 @@ class PredictionResponse(BaseModel):
     )
     risk_level: RiskLevel
     needs_review: bool
+    risk_factors: list[str]
