@@ -1,7 +1,7 @@
-from datetime import date, datetime
+from datetime import datetime
 from enum import StrEnum
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field
 
 
 class TransactionCategory(StrEnum):
@@ -51,7 +51,6 @@ class TransactionRequest(BaseModel):
         le=180,
     )
     city_population: int = Field(ge=0)
-    customer_date_of_birth: date
     merchant_latitude: float = Field(
         ge=-90,
         le=90,
@@ -60,17 +59,6 @@ class TransactionRequest(BaseModel):
         ge=-180,
         le=180,
     )
-
-    @model_validator(mode="after")
-    def validate_date_of_birth(self) -> "TransactionRequest":
-        transaction_date = self.transaction_datetime.date()
-
-        if self.customer_date_of_birth >= transaction_date:
-            raise ValueError(
-                "Customer date of birth must be before transaction date."
-            )
-
-        return self
 
 
 class PredictionResponse(BaseModel):

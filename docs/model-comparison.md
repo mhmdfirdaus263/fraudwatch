@@ -1,49 +1,35 @@
-# FraudWatch Model Comparison
+# Model Comparison
 
-## Validation Setup
+## Evaluation Strategy
 
-All models were evaluated using the same chronological validation set:
+Models were evaluated using a chronological 80/20 split of the training
+dataset.
 
 - Training rows: 1,037,340
 - Validation rows: 259,335
-- Validation period: 2020-03-06 to 2020-06-21
-- Validation fraud cases: 1,538
+- Primary metric: PR-AUC
+- Secondary metrics: precision, recall, F1 score, and ROC-AUC
 
-The external test dataset remained frozen during model selection.
+PR-AUC is prioritized because the dataset is highly imbalanced and fraud
+represents less than one percent of all transactions.
 
-## Results
+## Historical Model Results
 
-Each model is shown using its best validation F1 threshold.
+The first model comparison included customer age as an input feature.
 
-| Model | Threshold | Precision | Recall | F1 | PR-AUC | ROC-AUC |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Logistic Regression | 0.9003 | 0.3331 | 0.6450 | 0.4393 | 0.2304 | 0.9595 |
-| Random Forest | 0.6427 | 0.7912 | 0.7835 | 0.7873 | 0.8569 | 0.9941 |
-| Histogram Gradient Boosting | 0.9688 | 0.8877 | 0.7809 | 0.8309 | 0.8927 | 0.9974 |
+| Model | Precision | Recall | F1 | PR-AUC | ROC-AUC |
+|---|---:|---:|---:|---:|---:|
+| Logistic Regression | 0.3331 | 0.6450 | 0.4393 | 0.2304 | 0.9595 |
+| Random Forest | 0.7912 | 0.7835 | 0.7873 | 0.8569 | 0.9941 |
+| Histogram Gradient Boosting | 0.8877 | 0.7809 | 0.8309 | 0.8927 | 0.9974 |
 
-## Champion Model
+Each row reports performance at that model's best validation F1 threshold.
 
-Histogram Gradient Boosting was selected as the champion model.
+Histogram Gradient Boosting was initially selected because it produced the
+highest F1 score and PR-AUC while keeping the serialized model relatively
+small.
 
-At its selected threshold:
-
-- True negatives: 257,645
-- False positives: 152
-- False negatives: 337
-- True positives: 1,201
-
-Reasons for selection:
-
-- Highest validation F1-score
-- Highest precision
-- Highest PR-AUC
-- Highest ROC-AUC
-- Substantially fewer false alerts than Random Forest
-- Suitable inference characteristics for a web application
-
-## Locked Decision
-
-The selected validation threshold is:
+Its historical decision threshold was:
 
 ```text
 0.9687659320172795

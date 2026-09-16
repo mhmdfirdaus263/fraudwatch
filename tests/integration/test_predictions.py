@@ -20,7 +20,6 @@ VALID_REQUEST = {
     "customer_latitude": 40.7128,
     "customer_longitude": -74.0060,
     "city_population": 8000000,
-    "customer_date_of_birth": "1995-05-20",
     "merchant_latitude": 40.7306,
     "merchant_longitude": -73.9352,
 }
@@ -35,7 +34,7 @@ def test_create_prediction_returns_risk_result(
         return PredictionResponse(
             prediction=PredictionLabel.FRAUD,
             fraud_score=0.99,
-            decision_threshold=0.9687659320172795,
+            decision_threshold=0.9796734656451997,
             risk_level=RiskLevel.CRITICAL,
             needs_review=True,
             risk_factors=[
@@ -69,7 +68,7 @@ def test_create_prediction_returns_risk_result(
     assert response.json() == {
         "prediction": "fraud",
         "fraud_score": 0.99,
-        "decision_threshold": 0.9687659320172795,
+        "decision_threshold": 0.9796734656451997,
         "risk_level": "critical",
         "needs_review": True,
         "risk_factors": [

@@ -43,7 +43,6 @@ def build_raw_transaction(
                 "lat": request.customer_latitude,
                 "long": request.customer_longitude,
                 "city_pop": request.city_population,
-                "dob": request.customer_date_of_birth,
                 "merch_lat": request.merchant_latitude,
                 "merch_long": request.merchant_longitude,
             }

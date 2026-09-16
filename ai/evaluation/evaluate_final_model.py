@@ -41,7 +41,7 @@ METRICS_PATH = (
     / "final_test_metrics.json"
 )
 
-LOCKED_THRESHOLD = 0.9687659320172795
+LOCKED_THRESHOLD = 0.9796734656451997
 
 
 def load_dataset(file_path: Path) -> pd.DataFrame:

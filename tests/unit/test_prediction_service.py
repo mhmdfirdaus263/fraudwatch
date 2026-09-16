@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import datetime
 
 import pytest
 
@@ -30,11 +30,6 @@ def create_transaction_request() -> TransactionRequest:
         customer_latitude=40.7128,
         customer_longitude=-74.0060,
         city_population=8_000_000,
-        customer_date_of_birth=date(
-            1995,
-            5,
-            20,
-        ),
         merchant_latitude=40.7306,
         merchant_longitude=-73.9352,
     )
@@ -50,6 +45,7 @@ def test_build_raw_transaction_maps_request_fields() -> None:
     assert raw_transaction.loc[0, "amt"] == 500.0
     assert raw_transaction.loc[0, "state"] == "NY"
     assert raw_transaction.loc[0, "city_pop"] == 8_000_000
+    assert "dob" not in raw_transaction.columns
 
 
 @pytest.mark.parametrize(
@@ -111,7 +107,6 @@ def test_predict_transaction_applies_risk_rules(
         response.decision_threshold
         == predictor.DECISION_THRESHOLD
     )
-
     assert response.risk_factors == [
         "Transaction occurred during a high-risk time window.",
         "Category has an elevated fraud rate in training data.",

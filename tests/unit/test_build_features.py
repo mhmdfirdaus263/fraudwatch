@@ -35,10 +35,6 @@ def create_sample_data() -> pd.DataFrame:
                 1_000_000,
                 500_000,
             ],
-            "dob": [
-                "1994-01-01",
-                "2000-06-15",
-            ],
             "merch_lat": [
                 40.0,
                 35.0,
@@ -62,7 +58,6 @@ def test_build_features_returns_expected_columns() -> None:
         "amount",
         "amount_log",
         "city_population",
-        "customer_age",
         "distance_km",
         "hour_sin",
         "hour_cos",
@@ -77,10 +72,6 @@ def test_build_features_calculates_derived_values() -> None:
 
     features = build_features(data)
 
-    assert features.loc[0, "customer_age"] == pytest.approx(
-        30.0,
-        abs=0.1,
-    )
     assert features.loc[0, "distance_km"] == pytest.approx(
         0.0,
         abs=0.001,
@@ -90,10 +81,10 @@ def test_build_features_calculates_derived_values() -> None:
 
 
 def test_build_features_rejects_missing_columns() -> None:
-    data = create_sample_data().drop(columns=["dob"])
+    data = create_sample_data().drop(columns=["state"])
 
     with pytest.raises(
         ValueError,
-        match="Missing required columns: dob",
+        match="Missing required columns: state",
     ):
         build_features(data)

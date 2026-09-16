@@ -13,7 +13,6 @@ REQUIRED_COLUMNS = {
     "lat",
     "long",
     "city_pop",
-    "dob",
     "merch_lat",
     "merch_long",
 }
@@ -27,7 +26,6 @@ NUMERICAL_FEATURES: Sequence[str] = (
     "amount",
     "amount_log",
     "city_population",
-    "customer_age",
     "distance_km",
     "hour_sin",
     "hour_cos",
@@ -80,17 +78,9 @@ def build_features(data: pd.DataFrame) -> pd.DataFrame:
         data["trans_date_trans_time"],
         errors="raise",
     )
-    birth_date = pd.to_datetime(
-        data["dob"],
-        errors="raise",
-    )
 
     transaction_hour = transaction_time.dt.hour
     transaction_weekday = transaction_time.dt.dayofweek
-
-    customer_age = (
-        (transaction_time - birth_date).dt.days / 365.25
-    ).clip(lower=0)
 
     features = pd.DataFrame(
         {
@@ -99,10 +89,13 @@ def build_features(data: pd.DataFrame) -> pd.DataFrame:
             "amount": data["amt"].astype(float),
             "amount_log": np.log1p(data["amt"].astype(float)),
             "city_population": data["city_pop"].astype(float),
-            "customer_age": customer_age,
             "distance_km": calculate_distance_km(data),
-            "hour_sin": np.sin(2 * np.pi * transaction_hour / 24),
-            "hour_cos": np.cos(2 * np.pi * transaction_hour / 24),
+            "hour_sin": np.sin(
+                2 * np.pi * transaction_hour / 24
+            ),
+            "hour_cos": np.cos(
+                2 * np.pi * transaction_hour / 24
+            ),
             "weekday_sin": np.sin(
                 2 * np.pi * transaction_weekday / 7
             ),
