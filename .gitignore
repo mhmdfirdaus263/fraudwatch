@@ -34,6 +34,7 @@ data/processed/*
 # Model artifacts
 models/*
 !models/.gitkeep
+!models/fraudwatch_champion.joblib
 
 # Evaluation artifacts
 data/evaluation/*
