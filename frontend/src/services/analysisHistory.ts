@@ -68,6 +68,17 @@ export function saveAnalysisRecord(
   return record;
 }
 
+export function deleteAnalysisRecord(recordId: string): void {
+  const updatedHistory = getAnalysisHistory().filter(
+    (record) => record.id !== recordId,
+  );
+
+  window.localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(updatedHistory),
+  );
+}
+
 export function clearAnalysisHistory(): void {
   window.localStorage.removeItem(STORAGE_KEY);
 }
