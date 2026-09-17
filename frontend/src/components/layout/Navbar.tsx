@@ -73,7 +73,7 @@ export function Navbar() {
               to="/analyze"
               onClick={closeMenu}
             >
-              Run Analysis
+              Analyze Transaction
               <ArrowRight size={18} />
             </Link>
           </div>
@@ -86,7 +86,7 @@ export function Navbar() {
           </span>
 
           <Link className="navbar__action" to="/analyze">
-            Run Analysis
+            Analyze Transaction
             <ArrowRight size={18} />
           </Link>
         </div>
