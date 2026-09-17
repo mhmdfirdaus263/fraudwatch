@@ -769,3 +769,96 @@
 .category-preview__bar--primary {
   background: var(--color-orange-500);
 }
+.landing-header__menu-button {
+  display: none;
+  width: 2.65rem;
+  height: 2.65rem;
+  flex: 0 0 auto;
+  padding: 0;
+  place-items: center;
+  border: 1px solid rgb(92 126 143 / 22%);
+  border-radius: var(--radius-sm);
+  color: var(--color-ink-700);
+  background: var(--color-white);
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) ease,
+    border-color var(--duration-fast) ease,
+    background var(--duration-fast) ease;
+}
+
+.landing-header__menu-button:hover {
+  border-color: rgb(92 126 143 / 38%);
+  color: var(--color-orange-600);
+  background: var(--color-gray-100);
+}
+
+@media (max-width: 1050px) {
+  .landing-header__inner {
+    position: relative;
+    gap: var(--space-3);
+  }
+
+  .landing-header__navigation {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 1px);
+    right: 0;
+    left: 0;
+    display: none;
+    margin: 0;
+    padding: 0.85rem clamp(1.5rem, 4vw, 4.5rem) 1rem;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.25rem;
+    border-bottom: 1px solid rgb(92 126 143 / 18%);
+    background: rgb(255 255 255 / 97%);
+    box-shadow: 0 16px 30px rgb(22 49 64 / 12%);
+    backdrop-filter: blur(16px);
+  }
+
+  .landing-header__navigation--open {
+    display: flex;
+  }
+
+  .landing-header__navigation a {
+    width: 100%;
+    min-height: 2.8rem;
+    padding: 0.65rem 0.8rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .landing-header__navigation a:hover {
+    background: var(--color-gray-100);
+  }
+
+  .landing-header__action {
+    margin-left: auto;
+  }
+
+  .landing-header__menu-button {
+    display: grid;
+  }
+}
+
+@media (max-width: 520px) {
+  .landing-header__inner {
+    padding-inline: 0.85rem;
+  }
+
+  .landing-header__navigation {
+    padding-inline: 0.85rem;
+  }
+
+  .landing-header__action {
+    width: 2.65rem;
+    height: 2.65rem;
+    padding: 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .landing-header__action svg {
+    flex: 0 0 auto;
+  }
+}

@@ -3,7 +3,6 @@ import {
   BrainCircuit,
   ChartNoAxesCombined,
   Database,
-  ExternalLink,
   Gauge,
   Search,
   ShieldCheck,
@@ -11,7 +10,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import { Brand } from "../components/layout/Brand";
+import { LandingNavbar } from "../components/layout/LandingNavbar";
 import "./landing.css";
 
 const projectMetrics = [
@@ -77,48 +76,48 @@ const previewRows = [
   },
 ];
 
+const previewCategories = [
+  {
+    name: "shopping_net",
+    value: 100,
+  },
+  {
+    name: "misc_net",
+    value: 72,
+  },
+  {
+    name: "grocery_pos",
+    value: 58,
+  },
+  {
+    name: "shopping_pos",
+    value: 42,
+  },
+  {
+    name: "gas_transport",
+    value: 30,
+  },
+];
+
 export function LandingPage() {
   return (
     <div className="landing page-enter">
-      <header className="landing-header">
-        <div className="landing-header__inner">
-          <Brand />
-
-          <nav
-            className="landing-header__navigation"
-            aria-label="Landing navigation"
-          >
-            <a href="#how-it-works">How It Works</a>
-            <Link to="/model-insights">Model</Link>
-            <a href="#responsible-ai">Responsible AI</a>
-            <a
-              href="http://127.0.0.1:8000/docs"
-              target="_blank"
-              rel="noreferrer"
-            >
-              API Docs
-              <ExternalLink size={14} />
-            </a>
-          </nav>
-
-          <Link className="landing-header__action" to="/overview">
-            Open Dashboard
-            <ArrowRight size={18} />
-          </Link>
-        </div>
-      </header>
+      <LandingNavbar />
 
       <main>
         <section className="hero">
-            <div className="hero__background" aria-hidden="true">
-                <span className="hero__shape hero__shape--one" />
-                <span className="hero__shape hero__shape--two" />
-                <span className="hero__shape hero__shape--three" />
-            </div>
+          <div
+            aria-hidden="true"
+            className="hero__background"
+          >
+            <span className="hero__shape hero__shape--one" />
+            <span className="hero__shape hero__shape--two" />
+            <span className="hero__shape hero__shape--three" />
+          </div>
 
           <div className="hero__content">
             <div className="hero__eyebrow">
-              <ShieldCheck size={18} />
+              <ShieldCheck aria-hidden="true" size={18} />
               Privacy-safe fraud detection
             </div>
 
@@ -134,13 +133,19 @@ export function LandingPage() {
             </p>
 
             <div className="hero__actions">
-              <Link className="button button--primary" to="/overview">
+              <Link
+                className="button button--primary"
+                to="/overview"
+              >
                 Open Dashboard
-                <ArrowRight size={19} />
+                <ArrowRight aria-hidden="true" size={19} />
               </Link>
 
-              <Link className="button button--secondary" to="/analyze">
-                <Search size={19} />
+              <Link
+                className="button button--secondary"
+                to="/analyze"
+              >
+                <Search aria-hidden="true" size={19} />
                 Try Transaction Analysis
               </Link>
             </div>
@@ -156,19 +161,22 @@ export function LandingPage() {
             </div>
 
             <p className="hero__disclaimer">
-              <Database size={15} />
+              <Database aria-hidden="true" size={15} />
               Evaluated on a synthetic transaction dataset.
             </p>
           </div>
 
-          <div className="product-preview" aria-label="FraudWatch preview">
+          <div
+            aria-label="FraudWatch preview"
+            className="product-preview"
+          >
             <div className="preview-glow preview-glow--one" />
             <div className="preview-glow preview-glow--two" />
 
             <article className="preview-card preview-score card-enter">
               <div className="preview-card__header">
                 <span>Transaction risk</span>
-                <Gauge size={19} />
+                <Gauge aria-hidden="true" size={19} />
               </div>
 
               <div className="score-ring">
@@ -179,7 +187,8 @@ export function LandingPage() {
               </div>
 
               <div className="fraud-notice">
-                <TriangleAlert size={21} />
+                <TriangleAlert aria-hidden="true" size={21} />
+
                 <div>
                   <strong>Likely fraudulent</strong>
                   <span>Critical risk · Review required</span>
@@ -195,7 +204,10 @@ export function LandingPage() {
 
               <div className="preview-table">
                 {previewRows.map((row) => (
-                  <div className="preview-table__row" key={row.amount}>
+                  <div
+                    className="preview-table__row"
+                    key={row.amount}
+                  >
                     <div>
                       <strong>{row.amount}</strong>
                       <span>{row.category}</span>
@@ -218,18 +230,33 @@ export function LandingPage() {
             <article className="preview-card preview-chart card-enter">
               <div className="preview-card__header">
                 <span>Fraud activity</span>
-                <ChartNoAxesCombined size={19} />
+
+                <ChartNoAxesCombined
+                  aria-hidden="true"
+                  size={19}
+                />
               </div>
 
-              <div className="mini-chart" aria-hidden="true">
-                {[36, 48, 42, 62, 55, 70, 64, 82, 73, 88, 77, 92].map(
-                  (height, index) => (
-                    <span
-                      key={`${height}-${index}`}
-                      style={{ height: `${height}%` }}
-                    />
-                  ),
-                )}
+              <div aria-hidden="true" className="mini-chart">
+                {[
+                  36,
+                  48,
+                  42,
+                  62,
+                  55,
+                  70,
+                  64,
+                  82,
+                  73,
+                  88,
+                  77,
+                  92,
+                ].map((height, index) => (
+                  <span
+                    key={`${height}-${index}`}
+                    style={{ height: `${height}%` }}
+                  />
+                ))}
               </div>
 
               <div className="mini-chart__legend">
@@ -237,6 +264,7 @@ export function LandingPage() {
                   <i className="legend-dot legend-dot--steel" />
                   Total transactions
                 </span>
+
                 <span>
                   <i className="legend-dot legend-dot--orange" />
                   Fraud cases
@@ -245,46 +273,44 @@ export function LandingPage() {
             </article>
 
             <article className="preview-card preview-category card-enter">
-                <div className="preview-card__header">
-                    <span>Top risk categories</span>
-                    <Link to="/model-insights">See all</Link>
-                </div>
+              <div className="preview-card__header">
+                <span>Top risk categories</span>
+                <Link to="/model-insights">See all</Link>
+              </div>
 
-                <div className="category-preview">
-                    {[
-                        { name: "shopping_net", value: 100 },
-                        { name: "misc_net", value: 72 },
-                        { name: "grocery_pos", value: 58 },
-                        { name: "shopping_pos", value: 42 },
-                        { name: "gas_transport", value: 30 },
-                    ].map((category, index) => (
-                        <div className="category-preview__row" key={category.name}>
-                            <span>{category.name}</span>
+              <div className="category-preview">
+                {previewCategories.map((category, index) => (
+                  <div
+                    className="category-preview__row"
+                    key={category.name}
+                  >
+                    <span>{category.name}</span>
 
-                            <div className="category-preview__track">
-                                <i
-                                    className={
-                                        index === 0
-                                            ? "category-preview__bar category-preview__bar--primary"
-                                            : "category-preview__bar"
-                                        }
-                                        style={{ width: `${category.value}%` }}
-                                    />
-                                </div>
-                            </div>
-                        ))}
+                    <div className="category-preview__track">
+                      <i
+                        className={
+                          index === 0
+                            ? "category-preview__bar category-preview__bar--primary"
+                            : "category-preview__bar"
+                        }
+                        style={{ width: `${category.value}%` }}
+                      />
                     </div>
-                </article>
+                  </div>
+                ))}
+              </div>
+            </article>
           </div>
         </section>
 
         <section
+          aria-labelledby="workflow-title"
           className="workflow"
           id="how-it-works"
-          aria-labelledby="workflow-title"
         >
           <div className="section-heading">
             <span>How it works</span>
+
             <h2 id="workflow-title">
               From transaction details to transparent risk signals
             </h2>
@@ -295,10 +321,13 @@ export function LandingPage() {
               const Icon = step.icon;
 
               return (
-                <article className="workflow-card" key={step.number}>
+                <article
+                  className="workflow-card"
+                  key={step.number}
+                >
                   <div className="workflow-card__top">
                     <span>{step.number}</span>
-                    <Icon size={24} />
+                    <Icon aria-hidden="true" size={24} />
                   </div>
 
                   <h3>{step.title}</h3>
@@ -310,14 +339,15 @@ export function LandingPage() {
         </section>
 
         <section
+          aria-labelledby="responsible-title"
           className="responsible-ai"
           id="responsible-ai"
-          aria-labelledby="responsible-title"
         >
           <div>
             <span className="responsible-ai__eyebrow">
               Responsible by design
             </span>
+
             <h2 id="responsible-title">
               Strong performance with a smaller privacy footprint
             </h2>
@@ -328,10 +358,12 @@ export function LandingPage() {
               Customer age and date of birth were removed after an
               ablation study.
             </p>
+
             <p>
               Scores indicate relative model risk and are not calibrated
               probabilities.
             </p>
+
             <p>
               High-risk predictions support human review rather than
               automatic blocking.
@@ -340,7 +372,7 @@ export function LandingPage() {
 
           <Link to="/model-insights">
             Explore model insights
-            <ArrowRight size={18} />
+            <ArrowRight aria-hidden="true" size={18} />
           </Link>
         </section>
       </main>
