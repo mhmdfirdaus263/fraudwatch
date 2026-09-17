@@ -22,6 +22,7 @@ import type {
 
 interface TransactionFormProps {
   errorMessage: string | null;
+  initialRequest: TransactionRequest | null;
   isSubmitting: boolean;
   onAnalyze: (transaction: TransactionRequest) => Promise<void>;
   onReset: () => void;
@@ -48,17 +49,19 @@ function getCurrentLocalDateTime(): string {
     .slice(0, 16);
 }
 
-const initialValues: TransactionFormValues = {
-  transaction_datetime: getCurrentLocalDateTime(),
-  category: "shopping_net",
-  amount: "",
-  state: "",
-  customer_latitude: "",
-  customer_longitude: "",
-  city_population: "",
-  merchant_latitude: "",
-  merchant_longitude: "",
-};
+function getInitialValues(): TransactionFormValues {
+  return {
+    transaction_datetime: getCurrentLocalDateTime(),
+    category: "shopping_net",
+    amount: "",
+    state: "",
+    customer_latitude: "",
+    customer_longitude: "",
+    city_population: "",
+    merchant_latitude: "",
+    merchant_longitude: "",
+  };
+}
 
 const emptyValues: TransactionFormValues = {
   transaction_datetime: "",
@@ -90,34 +93,40 @@ function requestToFormValues(
 
 export function TransactionForm({
   errorMessage,
+  initialRequest,
   isSubmitting,
   onAnalyze,
   onReset,
 }: TransactionFormProps) {
-  const [values, setValues] =
-    useState<TransactionFormValues>(initialValues);
+  const [values, setValues] = useState<TransactionFormValues>(() =>
+    initialRequest
+      ? requestToFormValues(initialRequest)
+      : getInitialValues(),
+  );
 
   function updateValue<Key extends keyof TransactionFormValues>(
     field: Key,
     value: TransactionFormValues[Key],
-  ) {
+  ): void {
     setValues((currentValues) => ({
       ...currentValues,
       [field]: value,
     }));
   }
 
-  function loadSampleTransaction() {
+  function loadSampleTransaction(): void {
     setValues(requestToFormValues(sampleTransaction));
     onReset();
   }
 
-  function resetForm() {
+  function resetForm(): void {
     setValues(emptyValues);
     onReset();
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(
+    event: FormEvent<HTMLFormElement>,
+  ): Promise<void> {
     event.preventDefault();
 
     const transaction: TransactionRequest = {
@@ -378,7 +387,7 @@ export function TransactionForm({
                 className="form-spinner"
                 size={17}
               />
-              Analyzing…
+              Analyzing...
             </>
           ) : (
             <>

@@ -6,20 +6,25 @@ import { useState } from "react";
 
 import { PredictionResultPanel } from "../components/analyze/PredictionResultPanel";
 import { TransactionForm } from "../components/analyze/TransactionForm";
+import {
+  clearActiveAnalysis,
+  getActiveAnalysis,
+  saveActiveAnalysis,
+  type ActiveAnalysis,
+} from "../services/activeAnalysis";
 import { saveAnalysisRecord } from "../services/analysisHistory";
 import { analyzeTransaction } from "../services/predictionApi";
-import type {
-  PredictionResponse,
-  TransactionRequest,
-} from "../types/prediction";
+import type { TransactionRequest } from "../types/prediction";
 
 import "./analyze.css";
 
 export function AnalyzePage() {
-  const [result, setResult] =
-    useState<PredictionResponse | null>(null);
+  const [activeAnalysis, setActiveAnalysis] =
+    useState<ActiveAnalysis | null>(() => getActiveAnalysis());
+
   const [errorMessage, setErrorMessage] =
     useState<string | null>(null);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleAnalyze(
@@ -31,7 +36,13 @@ export function AnalyzePage() {
     try {
       const prediction = await analyzeTransaction(transaction);
 
-      setResult(prediction);
+      const nextActiveAnalysis: ActiveAnalysis = {
+        request: transaction,
+        result: prediction,
+      };
+
+      setActiveAnalysis(nextActiveAnalysis);
+      saveActiveAnalysis(transaction, prediction);
       saveAnalysisRecord(transaction, prediction);
     } catch (error) {
       const message =
@@ -46,8 +57,9 @@ export function AnalyzePage() {
   }
 
   function handleReset(): void {
-    setResult(null);
+    setActiveAnalysis(null);
     setErrorMessage(null);
+    clearActiveAnalysis();
   }
 
   return (
@@ -78,12 +90,15 @@ export function AnalyzePage() {
       <section className="analyze-layout">
         <TransactionForm
           errorMessage={errorMessage}
+          initialRequest={activeAnalysis?.request ?? null}
           isSubmitting={isSubmitting}
           onAnalyze={handleAnalyze}
           onReset={handleReset}
         />
 
-        <PredictionResultPanel result={result} />
+        <PredictionResultPanel
+          result={activeAnalysis?.result ?? null}
+        />
       </section>
     </main>
   );
