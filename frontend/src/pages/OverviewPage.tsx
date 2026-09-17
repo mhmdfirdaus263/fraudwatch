@@ -22,8 +22,8 @@ import {
   fraudActivity,
   modelPerformance,
   overviewSummary,
-  recentAnalyses,
 } from "../data/overview";
+import { getAnalysisHistory } from "../services/analysisHistory";
 
 import "./overview.css";
 
@@ -34,7 +34,31 @@ const summaryIcons = {
   alerts: Activity,
 };
 
+const currencyFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
+
+const dateFormatter = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+});
+
+function formatLabel(value: string): string {
+  return value
+    .split("_")
+    .map(
+      (word) =>
+        word.charAt(0).toUpperCase() + word.slice(1),
+    )
+    .join(" ");
+}
+
 export function OverviewPage() {
+  const recentAnalyses = getAnalysisHistory().slice(0, 5);
+
   return (
     <main className="overview-page">
       <header className="overview-heading">
@@ -48,12 +72,15 @@ export function OverviewPage() {
             </span>
           </div>
 
-          <p>Final test evaluation and recent browser analyses.</p>
+          <p>
+            Final model evaluation and recent analyses
+            stored in this browser.
+          </p>
         </div>
       </header>
 
       <section
-        aria-label="Evaluation summary"
+        aria-label="Final test evaluation summary"
         className="overview-summary-grid"
       >
         {overviewSummary.map((item) => {
@@ -69,12 +96,19 @@ export function OverviewPage() {
               </span>
 
               <div className="summary-card__content">
-                <span className="summary-card__label">{item.label}</span>
+                <span className="summary-card__label">
+                  {item.label}
+                </span>
+
                 <strong>{item.value}</strong>
+
                 <small>{item.description}</small>
               </div>
 
-              <div aria-hidden="true" className="summary-card__bars">
+              <div
+                aria-hidden="true"
+                className="summary-card__bars"
+              >
                 <span />
                 <span />
                 <span />
@@ -89,18 +123,13 @@ export function OverviewPage() {
         <article className="dashboard-panel activity-panel">
           <header className="dashboard-panel__header">
             <div>
-              <h2>Fraud Activity</h2>
-              <span>Last 30 days</span>
-            </div>
+              <h2>Illustrative Fraud Activity</h2>
 
-            <select
-              aria-label="Fraud activity period"
-              defaultValue="30-days"
-            >
-              <option value="30-days">Last 30 days</option>
-              <option value="14-days">Last 14 days</option>
-              <option value="7-days">Last 7 days</option>
-            </select>
+              <span>
+                Sample 30-day activity — not live
+                production data
+              </span>
+            </div>
           </header>
 
           <div className="activity-chart">
@@ -140,7 +169,8 @@ export function OverviewPage() {
                   contentStyle={{
                     border: "1px solid #d4dde2",
                     borderRadius: "8px",
-                    boxShadow: "0 10px 25px rgba(13, 27, 49, 0.1)",
+                    boxShadow:
+                      "0 10px 25px rgba(13, 27, 49, 0.1)",
                     fontSize: "12px",
                   }}
                 />
@@ -189,12 +219,17 @@ export function OverviewPage() {
           <header className="dashboard-panel__header">
             <div>
               <h2>Category Risk</h2>
+
+              <span>Final test-set distribution</span>
             </div>
           </header>
 
           <div className="category-risk-list">
             {categoryRisk.map((item, index) => (
-              <div className="category-risk-item" key={item.category}>
+              <div
+                className="category-risk-item"
+                key={item.category}
+              >
                 <span className="category-risk-item__name">
                   {item.category}
                 </span>
@@ -206,7 +241,9 @@ export function OverviewPage() {
                         ? "category-risk-item__bar category-risk-item__bar--primary"
                         : "category-risk-item__bar"
                     }
-                    style={{ width: `${item.risk * 3}%` }}
+                    style={{
+                      width: `${item.risk * 3}%`,
+                    }}
                   />
                 </div>
 
@@ -220,12 +257,17 @@ export function OverviewPage() {
           <header className="dashboard-panel__header">
             <div>
               <h2>Model Performance</h2>
+
+              <span>Final test results</span>
             </div>
           </header>
 
           <div className="performance-grid">
             {modelPerformance.map((metric) => (
-              <div className="performance-metric" key={metric.label}>
+              <div
+                className="performance-metric"
+                key={metric.label}
+              >
                 <span>{metric.label}</span>
                 <strong>{metric.value}</strong>
                 <small>{metric.description}</small>
@@ -239,7 +281,10 @@ export function OverviewPage() {
         <header className="dashboard-panel__header recent-panel__header">
           <div>
             <h2>Recent Analyses</h2>
-            <span>Demo browser activity</span>
+
+            <span>
+              Latest analyses saved in this browser
+            </span>
           </div>
 
           <Link to="/history">
@@ -262,36 +307,90 @@ export function OverviewPage() {
             </thead>
 
             <tbody>
-              {recentAnalyses.map((analysis) => (
-                <tr key={analysis.id}>
-                  <td>{analysis.analyzedAt}</td>
-                  <td>{analysis.amount}</td>
-                  <td>{analysis.category}</td>
-                  <td>{analysis.score}</td>
-                  <td>
-                    <span
-                      className={
-                        analysis.prediction === "Fraud"
-                          ? "table-badge table-badge--fraud"
-                          : "table-badge table-badge--legitimate"
-                      }
-                    >
-                      {analysis.prediction}
-                    </span>
-                  </td>
-                  <td>
-                    <span
-                      className={
-                        analysis.risk === "High"
-                          ? "table-badge table-badge--high"
-                          : "table-badge table-badge--low"
-                      }
-                    >
-                      {analysis.risk}
-                    </span>
+              {recentAnalyses.length > 0 ? (
+                recentAnalyses.map((analysis) => {
+                  const prediction = formatLabel(
+                    analysis.result.prediction,
+                  );
+
+                  const risk = formatLabel(
+                    analysis.result.risk_level,
+                  );
+
+                  const isHighRisk =
+                    analysis.result.risk_level === "high" ||
+                    analysis.result.risk_level ===
+                      "critical";
+
+                  return (
+                    <tr key={analysis.id}>
+                      <td>
+                        {dateFormatter.format(
+                          new Date(analysis.analyzed_at),
+                        )}
+                      </td>
+
+                      <td>
+                        {currencyFormatter.format(
+                          analysis.request.amount,
+                        )}
+                      </td>
+
+                      <td>
+                        {formatLabel(
+                          analysis.request.category,
+                        )}
+                      </td>
+
+                      <td>
+                        {analysis.result.fraud_score.toFixed(
+                          4,
+                        )}
+                      </td>
+
+                      <td>
+                        <span
+                          className={
+                            analysis.result.prediction ===
+                            "fraud"
+                              ? "table-badge table-badge--fraud"
+                              : "table-badge table-badge--legitimate"
+                          }
+                        >
+                          {prediction}
+                        </span>
+                      </td>
+
+                      <td>
+                        <span
+                          className={
+                            isHighRisk
+                              ? "table-badge table-badge--high"
+                              : "table-badge"
+                          }
+                        >
+                          {risk}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td
+                    colSpan={6}
+                    style={{
+                      color: "#738999",
+                      padding: "32px 16px",
+                      textAlign: "center",
+                    }}
+                  >
+                    No analyses saved in this browser
+                    yet. Run a transaction analysis to
+                    populate this table.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
