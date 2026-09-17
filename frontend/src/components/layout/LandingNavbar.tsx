@@ -9,6 +9,12 @@ import { Link } from "react-router-dom";
 
 import { Brand } from "./Brand";
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ??
+  "http://127.0.0.1:8000";
+
+const API_DOCS_URL = `${API_BASE_URL}/docs`;
+
 export function LandingNavbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -43,7 +49,7 @@ export function LandingNavbar() {
           </a>
 
           <a
-            href="http://127.0.0.1:8000/docs"
+            href={API_DOCS_URL}
             onClick={closeMenu}
             rel="noreferrer"
             target="_blank"
